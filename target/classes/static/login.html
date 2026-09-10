@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartClass - Login</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="auth-logo">
+            <div class="icon-badge" id="logoBadge"></div>
+            <h1>SmartClass</h1>
+            <p>Tuition Class Management System</p>
+        </div>
+
+        <div id="loginAlert" class="alert alert-error"></div>
+
+        <form id="loginForm" novalidate>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" autocomplete="username" required>
+                <div class="form-error" id="usernameError">Username is required</div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" autocomplete="current-password" required>
+                <div class="form-error" id="passwordError">Password is required</div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" id="loginBtn">
+                Sign In
+            </button>
+        </form>
+
+        <div class="auth-switch">
+            Don't have an account? <a href="register.html">Register here</a>
+        </div>
+
+        <div class="auth-switch" style="margin-top:8px; font-size:12px;">
+            Default admin: <code>admin</code> / <code>Admin@123</code>
+        </div>
+    </div>
+</div>
+
+<script src="icons.js"></script>
+<script src="api.js"></script>
+<script>
+    document.getElementById('logoBadge').innerHTML = Icons.html('graduation', 36);
+
+    // If already logged in, skip straight to the right dashboard
+    if (Auth.isLoggedIn()) {
+        redirectToDashboard();
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideAlert('loginAlert');
+
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+
+        let valid = true;
+        toggleFieldError('username', username.length === 0);
+        toggleFieldError('password', password.length === 0);
+        if (username.length === 0 || password.length === 0) valid = false;
+        if (!valid) return;
+
+        const btn = document.getElementById('loginBtn');
+        btn.disabled = true;
+        btn.textContent = 'Signing in...';
+
+        try {
+            const response = await Api.post('/auth/login', { username, password });
+            Auth.setSession(response);
+            redirectToDashboard();
+        } catch (err) {
+            showAlert('loginAlert', err.message || 'Login failed. Check your credentials.');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Sign In';
+        }
+    });
+
+    function toggleFieldError(fieldId, hasError) {
+        document.getElementById(fieldId + 'Error').classList.toggle('show', hasError);
+    }
+
+    function redirectToDashboard() {
+        const role = Auth.primaryRole();
+        if (role === 'ADMIN') window.location.href = 'admin-dashboard.html';
+        else if (role === 'TEACHER') window.location.href = 'teacher-dashboard.html';
+        else if (role === 'STUDENT') window.location.href = 'student-dashboard.html';
+        else window.location.href = 'login.html';
+    }
+</script>
+</body>
+</html>

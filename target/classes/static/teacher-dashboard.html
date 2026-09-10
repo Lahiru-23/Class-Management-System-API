@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartClass - Teacher Dashboard</title>
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div class="app-shell">
+    <nav class="sidebar">
+        <div class="sidebar-logo"><span class="nav-icon" data-icon="graduation"></span> SmartClass</div>
+        <div class="sidebar-nav">
+            <div class="nav-item active" data-tab="attendance"><span class="nav-icon" data-icon="attendance"></span><span class="nav-label">Attendance</span></div>
+            <div class="nav-item" data-tab="assignments"><span class="nav-icon" data-icon="assignments"></span><span class="nav-label">Assignments</span></div>
+            <div class="nav-item" data-tab="grading"><span class="nav-icon" data-icon="grading"></span><span class="nav-label">Grade Submissions</span></div>
+            <div class="nav-item" data-tab="announcements"><span class="nav-icon" data-icon="announcements"></span><span class="nav-label">Announcements</span></div>
+        </div>
+        <div class="sidebar-footer">
+            <div class="nav-item logout-item" id="logoutBtn"><span class="nav-icon" data-icon="logout"></span><span class="nav-label">Logout</span></div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="topbar">
+            <h2 id="pageTitle">Attendance</h2>
+            <div class="user-chip">
+                <span class="avatar-circle" id="avatarCircle"></span>
+                <span id="userLabel"></span>
+                <span class="badge badge-teacher">TEACHER</span>
+            </div>
+        </div>
+
+        <!-- Attendance tab -->
+        <section id="tab-attendance">
+            <div class="panel">
+                <div class="panel-header"><h3><span class="nav-icon" data-icon="attendance"></span> Mark Attendance</h3></div>
+                <div id="attendanceAlert" class="alert alert-error"></div>
+                <form id="attendanceForm" style="display:flex; gap:10px; align-items:end; flex-wrap:wrap;">
+                    <div class="form-group" style="margin:0;">
+                        <label>Enrollment ID</label>
+                        <input type="number" id="attEnrollmentId" required style="width:130px;">
+                    </div>
+                    <div class="form-group" style="margin:0;">
+                        <label>Date</label>
+                        <input type="date" id="attDate" required>
+                    </div>
+                    <div class="form-group" style="margin:0;">
+                        <label>Status</label>
+                        <select id="attStatus" required>
+                            <option value="PRESENT">Present</option>
+                            <option value="ABSENT">Absent</option>
+                            <option value="LATE">Late</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Mark</button>
+                </form>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h3><span class="nav-icon" data-icon="search"></span> Class Attendance Log</h3>
+                    <div class="panel-header-actions">
+                        <input type="number" id="attLookupClassId" placeholder="Class ID" style="width:110px; padding:9px 12px; border:1.5px solid var(--border); border-radius:10px;">
+                        <input type="date" id="attLookupDate" style="padding:9px 12px; border:1.5px solid var(--border); border-radius:10px;">
+                        <button class="btn btn-secondary btn-sm" onclick="loadAttendanceLog()">View</button>
+                    </div>
+                </div>
+                <div class="chart-canvas-wrap" style="height:200px; max-width:320px; margin-bottom:18px; display:none;" id="attendanceChartWrap"><canvas id="attendanceChart"></canvas></div>
+                <div id="attendanceLogTable"></div>
+            </div>
+        </section>
+
+        <!-- Assignments tab -->
+        <section id="tab-assignments" style="display:none;">
+            <div class="panel">
+                <div class="panel-header"><h3><span class="nav-icon" data-icon="assignments"></span> Create Assignment</h3></div>
+                <div id="assignmentAlert" class="alert alert-error"></div>
+                <form id="assignmentForm" style="display:flex; gap:10px; align-items:end; flex-wrap:wrap;">
+                    <div class="form-group" style="margin:0;">
+                        <label>Class ID</label>
+                        <input type="number" id="asgClassId" required style="width:100px;">
+                    </div>
+                    <div class="form-group" style="margin:0; flex:1; min-width:180px;">
+                        <label>Title</label>
+                        <input type="text" id="asgTitle" required>
+                    </div>
+                    <div class="form-group" style="margin:0;">
+                        <label>Due Date</label>
+                        <input type="date" id="asgDueDate" required>
+                    </div>
+                    <div class="form-group" style="margin:0;">
+                        <label>Max Marks</label>
+                        <input type="number" id="asgMaxMarks" value="100" style="width:100px;">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </form>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h3><span class="nav-icon" data-icon="search"></span> Assignments by Class</h3>
+                    <div class="panel-header-actions">
+                        <input type="number" id="asgLookupClassId" placeholder="Class ID" style="width:110px; padding:9px 12px; border:1.5px solid var(--border); border-radius:10px;">
+                        <button class="btn btn-secondary btn-sm" onclick="loadAssignments()">View</button>
+                    </div>
+                </div>
+                <div id="assignmentsTable"></div>
+            </div>
+        </section>
+
+        <!-- Grading tab -->
+        <section id="tab-grading" style="display:none;">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3><span class="nav-icon" data-icon="grading"></span> Submissions for Assignment</h3>
+                    <div class="panel-header-actions">
+                        <input type="number" id="gradeLookupAssignmentId" placeholder="Assignment ID" style="width:150px; padding:9px 12px; border:1.5px solid var(--border); border-radius:10px;">
+                        <button class="btn btn-secondary btn-sm" onclick="loadSubmissions()">View</button>
+                    </div>
+                </div>
+                <div id="submissionsTable"></div>
+            </div>
+        </section>
+
+        <!-- Announcements tab -->
+        <section id="tab-announcements" style="display:none;">
+            <div class="panel">
+                <div class="panel-header"><h3><span class="nav-icon" data-icon="announcements"></span> Post Announcement</h3></div>
+                <div id="announcementAlert" class="alert alert-error"></div>
+                <form id="announcementForm">
+                    <div class="form-group">
+                        <label>Class ID (leave empty for institute-wide — admin only in practice)</label>
+                        <input type="number" id="annClassId">
+                    </div>
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" id="annTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea id="annBody" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Post Announcement</button>
+                </form>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Grade modal -->
+<div class="modal-overlay" id="gradeModal">
+    <div class="modal">
+        <h3>Grade Submission</h3>
+        <div id="gradeModalAlert" class="alert alert-error"></div>
+        <form id="gradeForm">
+            <input type="hidden" id="gradeSubmissionId">
+            <div class="form-group"><label>Marks Obtained</label><input type="number" id="gradeMarks" required></div>
+            <div class="form-group"><label>Feedback</label><textarea id="gradeFeedback" rows="3"></textarea></div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('gradeModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Grade</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="icons.js"></script>
+<script src="api.js"></script>
+<script src="ai-chat.js"></script>
+<script>
+Auth.requireRole(['TEACHER', 'ADMIN']);
+const currentUser = Auth.getUser();
+document.getElementById('userLabel').textContent = currentUser.username;
+document.getElementById('avatarCircle').textContent = currentUser.username.charAt(0).toUpperCase();
+document.getElementById('logoutBtn').addEventListener('click', () => Auth.logout());
+
+document.querySelectorAll('.nav-icon[data-icon]').forEach(el => { el.innerHTML = Icons.html(el.dataset.icon, 19); });
+document.querySelectorAll('.sidebar-logo .nav-icon').forEach(el => el.innerHTML = Icons.html('graduation', 24));
+AiChat.init();
+
+document.querySelectorAll('.nav-item[data-tab]').forEach(item => {
+    item.addEventListener('click', () => {
+        document.querySelectorAll('.nav-item[data-tab]').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        document.querySelectorAll('main section').forEach(s => s.style.display = 'none');
+        document.getElementById('tab-' + item.dataset.tab).style.display = 'block';
+        document.getElementById('pageTitle').textContent = item.querySelector('.nav-label').textContent.trim();
+    });
+});
+
+// ---------- Attendance ----------
+document.getElementById('attendanceForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    hideAlert('attendanceAlert');
+    try {
+        await Api.post('/attendance', {
+            enrollmentId: Number(document.getElementById('attEnrollmentId').value),
+            date: document.getElementById('attDate').value,
+            status: document.getElementById('attStatus').value
+        });
+        showAlert('attendanceAlert', 'Attendance marked successfully.', 'success');
+        e.target.reset();
+    } catch (err) {
+        showAlert('attendanceAlert', err.message);
+    }
+});
+
+async function loadAttendanceLog() {
+    const classId = document.getElementById('attLookupClassId').value;
+    const date = document.getElementById('attLookupDate').value;
+    if (!classId || !date) { alert('Enter both Class ID and Date'); return; }
+    try {
+        const records = await Api.get(`/attendance/class/${classId}?date=${date}`);
+        const el = document.getElementById('attendanceLogTable');
+        const chartWrap = document.getElementById('attendanceChartWrap');
+        if (!records.length) {
+            el.innerHTML = `<div class="empty-state">${Icons.html('attendance', 40)}<div>No records for this date.</div></div>`;
+            chartWrap.style.display = 'none';
+            return;
+        }
+        el.innerHTML = `
+            <table>
+                <thead><tr><th>Student</th><th>Status</th><th>Marked By</th></tr></thead>
+                <tbody>
+                    ${records.map(r => `
+                        <tr>
+                            <td>${r.studentName}</td>
+                            <td><span class="status-pill status-${r.status.toLowerCase()}">${r.status}</span></td>
+                            <td>${r.markedByName}</td>
+                        </tr>`).join('')}
+                </tbody>
+            </table>`;
+        renderAttendanceChart(records);
+    } catch (err) {
+        document.getElementById('attendanceLogTable').innerHTML = `<div class="empty-state">${err.message}</div>`;
+    }
+}
+
+let attendanceChartInstance = null;
+function renderAttendanceChart(records) {
+    const counts = { PRESENT: 0, ABSENT: 0, LATE: 0 };
+    records.forEach(r => { counts[r.status] = (counts[r.status] || 0) + 1; });
+    const labels = Object.keys(counts).filter(k => counts[k] > 0);
+    const colors = { PRESENT: '#10b981', ABSENT: '#ef4444', LATE: '#f59e0b' };
+    const wrap = document.getElementById('attendanceChartWrap');
+    wrap.style.display = 'block';
+    if (attendanceChartInstance) attendanceChartInstance.destroy();
+    attendanceChartInstance = new Chart(document.getElementById('attendanceChart'), {
+        type: 'doughnut',
+        data: { labels, datasets: [{ data: labels.map(l => counts[l]), backgroundColor: labels.map(l => colors[l]), borderWidth: 0 }] },
+        options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } } } }
+    });
+}
+
+// ---------- Assignments ----------
+document.getElementById('assignmentForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    hideAlert('assignmentAlert');
+    try {
+        await Api.post('/assignments', {
+            classId: Number(document.getElementById('asgClassId').value),
+            title: document.getElementById('asgTitle').value,
+            dueDate: document.getElementById('asgDueDate').value,
+            maxMarks: Number(document.getElementById('asgMaxMarks').value) || 100
+        });
+        showAlert('assignmentAlert', 'Assignment created.', 'success');
+        e.target.reset();
+    } catch (err) {
+        showAlert('assignmentAlert', err.message);
+    }
+});
+
+async function loadAssignments() {
+    const classId = document.getElementById('asgLookupClassId').value;
+    if (!classId) return;
+    try {
+        const assignments = await Api.get(`/assignments/class/${classId}`);
+        const el = document.getElementById('assignmentsTable');
+        if (!assignments.length) { el.innerHTML = '<div class="empty-state">No assignments yet.</div>'; return; }
+        el.innerHTML = `
+            <table>
+                <thead><tr><th>ID</th><th>Title</th><th>Due Date</th><th>Max Marks</th></tr></thead>
+                <tbody>
+                    ${assignments.map(a => `
+                        <tr>
+                            <td>${a.id}</td>
+                            <td><strong>${a.title}</strong></td>
+                            <td>${formatDate(a.dueDate)}</td>
+                            <td>${a.maxMarks}</td>
+                        </tr>`).join('')}
+                </tbody>
+            </table>`;
+    } catch (err) {
+        document.getElementById('assignmentsTable').innerHTML = `<div class="empty-state">${err.message}</div>`;
+    }
+}
+
+// ---------- Grading ----------
+async function loadSubmissions() {
+    const assignmentId = document.getElementById('gradeLookupAssignmentId').value;
+    if (!assignmentId) return;
+    try {
+        const submissions = await Api.get(`/submissions/assignment/${assignmentId}`);
+        const el = document.getElementById('submissionsTable');
+        if (!submissions.length) { el.innerHTML = '<div class="empty-state">No submissions yet.</div>'; return; }
+        el.innerHTML = `
+            <table>
+                <thead><tr><th>Student</th><th>Submitted</th><th>Marks</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                    ${submissions.map(s => `
+                        <tr>
+                            <td>${s.studentName}</td>
+                            <td>${new Date(s.submittedAt).toLocaleString()}</td>
+                            <td>${s.marksObtained !== null ? s.marksObtained + ' / ' + s.maxMarks : 'Not graded'}</td>
+                            <td>${s.late ? '<span class="status-pill status-late">Late</span>' : '<span class="status-pill status-active">On time</span>'}</td>
+                            <td><button class="btn btn-secondary btn-sm" onclick="openGradeModal(${s.id})">Grade</button></td>
+                        </tr>`).join('')}
+                </tbody>
+            </table>`;
+    } catch (err) {
+        document.getElementById('submissionsTable').innerHTML = `<div class="empty-state">${err.message}</div>`;
+    }
+}
+
+function openGradeModal(submissionId) {
+    document.getElementById('gradeSubmissionId').value = submissionId;
+    document.getElementById('gradeModal').classList.add('show');
+}
+
+document.getElementById('gradeForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    hideAlert('gradeModalAlert');
+    try {
+        const id = document.getElementById('gradeSubmissionId').value;
+        await Api.patch(`/submissions/${id}/grade`, {
+            marksObtained: Number(document.getElementById('gradeMarks').value),
+            feedback: document.getElementById('gradeFeedback').value
+        });
+        closeModal('gradeModal');
+        loadSubmissions();
+    } catch (err) {
+        showAlert('gradeModalAlert', err.message);
+    }
+});
+
+// ---------- Announcements ----------
+document.getElementById('announcementForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    hideAlert('announcementAlert');
+    try {
+        const classId = document.getElementById('annClassId').value;
+        await Api.post('/announcements', {
+            classId: classId ? Number(classId) : null,
+            title: document.getElementById('annTitle').value,
+            body: document.getElementById('annBody').value
+        });
+        showAlert('announcementAlert', 'Announcement posted. Enrolled students have been notified.', 'success');
+        e.target.reset();
+    } catch (err) {
+        showAlert('announcementAlert', err.message);
+    }
+});
+
+function closeModal(id) {
+    document.getElementById(id).classList.remove('show');
+}
+</script>
+</body>
+</html>

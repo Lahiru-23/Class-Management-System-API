@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartClass - Admin Dashboard</title>
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div class="app-shell">
+    <nav class="sidebar">
+        <div class="sidebar-logo"><span class="nav-icon" data-icon="graduation"></span> SmartClass</div>
+        <div class="sidebar-nav">
+            <div class="nav-item active" data-tab="overview"><span class="nav-icon" data-icon="overview"></span><span class="nav-label">Overview</span></div>
+            <div class="nav-item" data-tab="classes"><span class="nav-icon" data-icon="classes"></span><span class="nav-label">Classes</span></div>
+            <div class="nav-item" data-tab="teachers"><span class="nav-icon" data-icon="teacher"></span><span class="nav-label">Teachers</span></div>
+            <div class="nav-item" data-tab="students"><span class="nav-icon" data-icon="student"></span><span class="nav-label">Students</span></div>
+            <div class="nav-item" data-tab="guardians"><span class="nav-icon" data-icon="guardians"></span><span class="nav-label">Guardians</span></div>
+            <div class="nav-item" data-tab="invoices"><span class="nav-icon" data-icon="invoices"></span><span class="nav-label">Invoices</span></div>
+            <div class="nav-item" data-tab="overdue"><span class="nav-icon" data-icon="overdue"></span><span class="nav-label">Overdue</span></div>
+        </div>
+        <div class="sidebar-footer">
+            <div class="nav-item logout-item" id="logoutBtn"><span class="nav-icon" data-icon="logout"></span><span class="nav-label">Logout</span></div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="topbar">
+            <h2 id="pageTitle">Overview</h2>
+            <div class="user-chip">
+                <span class="avatar-circle" id="avatarCircle"></span>
+                <span id="userLabel"></span>
+                <span class="badge badge-admin">ADMIN</span>
+            </div>
+        </div>
+
+        <!-- Overview tab -->
+        <section id="tab-overview">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon-wrap" data-icon="classes"></div>
+                    <div><div class="label">Total Classes</div><div class="value" id="statClasses">-</div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-wrap" data-icon="student"></div>
+                    <div><div class="label">Total Students</div><div class="value" id="statStudents">-</div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-wrap" data-icon="teacher"></div>
+                    <div><div class="label">Total Teachers</div><div class="value" id="statTeachers">-</div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-wrap" data-icon="overdue"></div>
+                    <div><div class="label">Overdue Invoices</div><div class="value" id="statOverdue">-</div></div>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-panel">
+                    <h3><span class="nav-icon" data-icon="analytics"></span> Enrollment by Class</h3>
+                    <div class="chart-sub">Enrolled students vs. capacity for each class</div>
+                    <div class="chart-canvas-wrap"><canvas id="enrollmentChart"></canvas></div>
+                </div>
+                <div class="chart-panel">
+                    <h3><span class="nav-icon" data-icon="invoices"></span> Invoice Status</h3>
+                    <div class="chart-sub">Breakdown of all invoices by payment status</div>
+                    <div class="chart-canvas-wrap"><canvas id="invoiceChart"></canvas></div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header"><h3><span class="nav-icon" data-icon="classes"></span> Recent Classes</h3></div>
+                <div id="overviewClassesTable"></div>
+            </div>
+        </section>
+
+        <!-- Classes tab -->
+        <section id="tab-classes" style="display:none;">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3><span class="nav-icon" data-icon="classes"></span> <span id="classFormTitle">Add Class</span></h3>
+                </div>
+                <div id="classFormAlert" class="alert alert-error"></div>
+                <form id="classForm">
+                    <div class="crud-form">
+                        <div class="form-group"><label>Subject ID</label><input type="number" id="classSubjectId" required></div>
+                        <div class="form-group"><label>Teacher ID</label><input type="number" id="classTeacherId" required></div>
+                        <div class="form-group"><label>Term ID</label><input type="number" id="classTermId" required></div>
+                        <div class="form-group"><label>Class Name</label><input type="text" id="className" required></div>
+                        <div class="form-group"><label>Capacity</label><input type="number" id="classCapacity" value="30"></div>
+                        <div class="form-group"><label>Room</label><input type="text" id="classRoom"></div>
+                    </div>
+                    <div class="crud-form-actions">
+                        <button type="button" class="btn btn-primary" onclick="Classes.add()">${ADD}Add</button>
+                        <button type="button" class="btn btn-warning" onclick="Classes.update()">${EDIT}Update</button>
+                        <button type="button" class="btn btn-danger" onclick="Classes.remove()">${DELETE}Delete</button>
+                        <button type="button" class="btn btn-secondary" onclick="Classes.reset()">${RESET}Reset</button>
+                    </div>
+                </form>
+                <p class="help-text">Click a row below to load it into the form for editing, then use Update, Delete or Reset.</p>
+                <div id="classesTable"></div>
+            </div>
+        </section>
+
+        <!-- Teachers tab -->
+        <section id="tab-teachers" style="display:none;">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3><span class="nav-icon" data-icon="teacher"></span> <span id="teacherFormTitle">Add Teacher</span></h3>
+                </div>
+                <div id="teacherFormAlert" class="alert alert-error"></div>
+                <p class="help-text">
+                    A teacher must already have a login account (register them as role TEACHER first) before creating their teacher profile here.
+                </p>
+                <form id="teacherForm">
+                    <div class="crud-form">
+                        <div class="form-group"><label>User ID (login account)</label><input type="number" id="teacherUserId" required></div>
+                        <div class="form-group"><label>Full Name</label><input type="text" id="teacherFullName" required></div>
+                        <div class="form-group"><label>Phone</label><input type="text" id="teacherPhone"></div>
+                        <div class="form-group"><label>Specialization</label><input type="text" id="teacherSpecialization"></div>
+                        <div class="form-group"><label>Hire Date</label><input type="date" id="teacherHireDate"></div>
+                    </div>
+                    <div class="crud-form-actions">
+                        <button type="button" class="btn btn-primary" onclick="Teachers.add()">${ADD}Add</button>
+                        <button type="button" class="btn btn-warning" onclick="Teachers.update()">${EDIT}Update</button>
+                        <button type="button" class="btn btn-danger" onclick="Teachers.remove()">${DELETE}Delete</button>
+                        <button type="button" class="btn btn-secondary" onclick="Teachers.reset()">${RESET}Reset</button>
+                    </div>
+                </form>
+                <div id="teachersTable"></div>
+            </div>
+        </section>
+
+        <!-- Students tab -->
+        <section id="tab-students" style="display:none;">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3><span class="nav-icon" data-icon="student"></span> <span id="studentFormTitle">Add Student</span></h3>
+                </div>
+                <div id="studentFormAlert" class="alert alert-error"></div>
+                <form id="studentForm">
+                    <div class="crud-form">
+                        <div class="form-group"><label>Full Name</label><input type="text" id="studentFullName" required></div>
+                        <div class="form-group"><label>Date of Birth</label><input type="date" id="studentDob"></div>
+                        <div class="form-group"><label>Guardian ID (optional)</label><input type="number" id="studentGuardianId"></div>
+                        <div class="form-group"><label>Linked User ID (optional)</label><input type="number" id="studentUserId"></div>
+                    </div>
+                    <div class="crud-form-actions">
+                        <button type="button" class="btn btn-primary" onclick="Students.add()">${ADD}Add</button>
+                        <button type="button" class="btn btn-warning" onclick="Students.update()">${EDIT}Update</button>
+                        <button type="button" class="btn btn-danger" onclick="Students.remove()">${DELETE}Delete</button>
+                        <button type="button" class="btn btn-secondary" onclick="Students.reset()">${RESET}Reset</button>
+                    </div>
+                </form>
+                <div id="studentsTable"></div>
+            </div>
+        </section>
+
+        <!-- Guardians tab -->
+        <section id="tab-guardians" style="display:none;">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3><span class="nav-icon" data-icon="guardians"></span> <span id="guardianFormTitle">Add Guardian</span></h3>
+                </div>
+                <div id="guardianFormAlert" class="alert alert-error"></div>
+                <form id="guardianForm">
+                    <div class="crud-form">
+                        <div class="form-group"><label>Full Name</label><input type="text" id="guardianFullName" required></div>
+                        <div class="form-group"><label>Phone</label><input type="text" id="guardianPhone" required></div>
+                        <div class="form-group"><label>Address</label><input type="text" id="guardianAddress"></div>
+                        <div class="form-group"><label>Linked User ID (optional)</label><input type="number" id="guardianUserId"></div>
+                    </div>
+                    <div class="crud-form-actions">
+                        <button type="button" class="btn btn-primary" onclick="Guardians.add()">${ADD}Add</button>
+                        <button type="button" class="btn btn-warning" onclick="Guardians.update()">${EDIT}Update</button>
+                        <button type="button" class="btn btn-danger" onclick="Guardians.remove()">${DELETE}Delete</button>
+                        <button type="button" class="btn btn-secondary" onclick="Guardians.reset()">${RESET}Reset</button>
+                    </div>
+                </form>
+                <div id="guardiansTable"></div>
+            </div>
+        </section>
+
+        <!-- Invoices tab -->
+        <section id="tab-invoices" style="display:none;">
+            <div class="panel">
+                <div class="panel-header"><h3><span class="nav-icon" data-icon="invoices"></span> Create Invoice</h3></div>
+                <form id="invoiceForm">
+                    <div class="crud-form">
+                        <div class="form-group"><label>Student ID</label><input type="number" id="invStudentId" required></div>
+                        <div class="form-group"><label>Fee Structure ID</label><input type="number" id="invFeeStructureId" required></div>
+                        <div class="form-group"><label>Due Date</label><input type="date" id="invDueDate" required></div>
+                    </div>
+                    <div class="crud-form-actions">
+                        <button type="submit" class="btn btn-primary">${ADD}Create Invoice</button>
+                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('invoiceForm').reset()">${RESET}Reset</button>
+                    </div>
+                </form>
+                <p class="help-text">Look up a student's invoices below by ID once created.</p>
+            </div>
+            <div class="panel">
+                <div class="panel-header">
+                    <h3><span class="nav-icon" data-icon="search"></span> Student Invoices</h3>
+                    <div class="panel-header-actions">
+                        <input type="number" id="lookupStudentId" placeholder="Student ID" style="width:120px; padding:9px 12px; border:1.5px solid var(--border); border-radius:10px;">
+                        <button class="btn btn-secondary btn-sm" onclick="loadStudentInvoices()">Lookup</button>
+                    </div>
+                </div>
+                <div id="invoicesTable"></div>
+            </div>
+        </section>
+
+        <!-- Overdue tab -->
+        <section id="tab-overdue" style="display:none;">
+            <div class="panel">
+                <div class="panel-header"><h3><span class="nav-icon" data-icon="overdue"></span> Overdue Invoices</h3></div>
+                <div id="overdueTable"></div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script src="icons.js"></script>
+<script src="api.js"></script>
+<script src="ai-chat.js"></script>
+<script>
+Auth.requireRole(['ADMIN']);
+const currentUser = Auth.getUser();
+document.getElementById('userLabel').textContent = currentUser.username;
+document.getElementById('avatarCircle').textContent = currentUser.username.charAt(0).toUpperCase();
+document.getElementById('logoutBtn').addEventListener('click', () => Auth.logout());
+
+// ---------- Render all inline 3D icons ----------
+function renderIcons(root = document) {
+    root.querySelectorAll('.nav-icon[data-icon]').forEach(el => { el.innerHTML = Icons.html(el.dataset.icon, 19); });
+    root.querySelectorAll('.stat-icon-wrap[data-icon]').forEach(el => { el.innerHTML = Icons.html(el.dataset.icon, 28); });
+}
+renderIcons();
+document.querySelectorAll('.sidebar-logo .nav-icon').forEach(el => el.innerHTML = Icons.html('graduation', 24));
+
+// Replace the ${ICON} placeholders inside action buttons with real 3D icons
+document.querySelectorAll('button').forEach(btn => {
+    btn.innerHTML = btn.innerHTML
+        .replace('${ADD}', Icons.html('add', 15))
+        .replace('${EDIT}', Icons.html('edit', 15))
+        .replace('${DELETE}', Icons.html('delete', 15))
+        .replace('${RESET}', Icons.html('reset', 15));
+});
+
+AiChat.init();
+
+// ---------- Tab navigation ----------
+document.querySelectorAll('.nav-item[data-tab]').forEach(item => {
+    item.addEventListener('click', () => {
+        document.querySelectorAll('.nav-item[data-tab]').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        document.querySelectorAll('main section').forEach(s => s.style.display = 'none');
+        document.getElementById('tab-' + item.dataset.tab).style.display = 'block';
+        document.getElementById('pageTitle').textContent = item.querySelector('.nav-label').textContent.trim();
+        loadTabData(item.dataset.tab);
+    });
+});
+
+function loadTabData(tab) {
+    if (tab === 'overview') loadOverview();
+    if (tab === 'classes') loadClasses();
+    if (tab === 'teachers') loadTeachers();
+    if (tab === 'students') loadStudents();
+    if (tab === 'guardians') loadGuardians();
+    if (tab === 'overdue') loadOverdue();
+}
+
+// ---------- Overview ----------
+let enrollmentChartInstance = null;
+let invoiceChartInstance = null;
+
+async function loadOverview() {
+    try {
+        const [classes, students, teachers] = await Promise.all([
+            Api.get('/classes'), Api.get('/students'), Api.get('/teachers')
+        ]);
+        document.getElementById('statClasses').textContent = classes.length;
+        document.getElementById('statStudents').textContent = students.length;
+        document.getElementById('statTeachers').textContent = teachers.length;
+        renderClassesTable(classes.slice(0, 5), 'overviewClassesTable');
+        renderEnrollmentChart(classes);
+
+        let overdue = [];
+        try { overdue = await Api.get('/invoices/overdue'); } catch { /* none */ }
+        document.getElementById('statOverdue').textContent = overdue.length;
+        renderInvoiceChart(students, overdue);
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+function renderEnrollmentChart(classes) {
+    const ctx = document.getElementById('enrollmentChart');
+    if (!ctx) return;
+    const top = classes.slice(0, 8);
+    const data = {
+        labels: top.map(c => c.name),
+        datasets: [
+            { label: 'Enrolled', data: top.map(c => c.enrolledCount), backgroundColor: '#6366f1', borderRadius: 6 },
+            { label: 'Capacity', data: top.map(c => c.capacity), backgroundColor: '#c7d2fe', borderRadius: 6 }
+        ]
+    };
+    if (enrollmentChartInstance) enrollmentChartInstance.destroy();
+    enrollmentChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data,
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, grid: { color: '#eef0fb' } } } }
+    });
+}
+
+async function renderInvoiceChart(students, overdue) {
+    const ctx = document.getElementById('invoiceChart');
+    if (!ctx) return;
+    // Sample a handful of students' invoices to build a status breakdown (keeps this light on the API).
+    const sampleIds = students.slice(0, 15).map(s => s.id);
+    const statusCounts = { PAID: 0, PENDING: 0, OVERDUE: overdue.length, PARTIAL: 0 };
+    try {
+        const results = await Promise.all(sampleIds.map(id => Api.get(`/invoices/student/${id}`).catch(() => [])));
+        results.flat().forEach(inv => {
+            const key = (inv.status || '').toUpperCase();
+            if (key === 'OVERDUE') return; // already counted from the dedicated overdue endpoint
+            statusCounts[key] = (statusCounts[key] || 0) + 1;
+        });
+    } catch { /* best-effort chart */ }
+
+    const labels = Object.keys(statusCounts).filter(k => statusCounts[k] > 0);
+    const values = labels.map(k => statusCounts[k]);
+    const colors = { PAID: '#10b981', PENDING: '#f59e0b', OVERDUE: '#ef4444', PARTIAL: '#6366f1' };
+
+    if (invoiceChartInstance) invoiceChartInstance.destroy();
+    if (!labels.length) { return; }
+    invoiceChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: { labels, datasets: [{ data: values, backgroundColor: labels.map(l => colors[l] || '#94a3b8'), borderWidth: 0 }] },
+        options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } } } }
+    });
+}
+
+// ---------- Classes ----------
+async function loadClasses() {
+    try {
+        const classes = await Api.get('/classes');
+        renderClassesTable(classes, 'classesTable', true);
+    } catch (err) {
+        document.getElementById('classesTable').innerHTML = `<div class="empty-state">${err.message}</div>`;
+    }
+}
+
+function renderClassesTable(classes, targetId, editable = false) {
+    const el = document.getElementById(targetId);
+    if (!classes.length) { el.innerHTML = emptyState('classes', 'No classes yet — add one above.'); return; }
+    el.innerHTML = `
+        <table>
+            <thead><tr><th>Name</th><th>Subject</th><th>Teacher</th><th>Term</th><th>Enrolled</th><th>Capacity</th>${editable ? '<th></th>' : ''}</tr></thead>
+            <tbody>
+                ${classes.map(c => `
+                    <tr class="${editable ? 'row-clickable' : ''}" ${editable ? `onclick="Classes.select(${JSON.stringify(c).replace(/"/g, '&quot;')})"` : ''}>
+                        <td><strong>${c.name}</strong></td>
+                        <td>${c.subjectName}</td>
+                        <td>${c.teacherName}</td>
+                        <td>${c.termName}</td>
+                        <td>${c.enrolledCount}</td>
+                        <td>${c.capacity}</td>
+                        ${editable ? `<td><span class="row-actions"><button class="btn btn-icon btn-secondary" title="Edit" onclick="event.stopPropagation(); Classes.select(${JSON.stringify(c).replace(/"/g, '&quot;')})">${Icons.html('edit', 14)}</button></span></td>` : ''}
+                    </tr>`).join('')}
+            </tbody>
+        </table>`;
+}
+
+const Classes = {
+    editingId: null,
+    select(c) {
+        this.editingId = c.id;
+        document.getElementById('classFormTitle').textContent = 'Editing Class #' + c.id;
+        document.getElementById('classSubjectId').value = '';
+        document.getElementById('classTeacherId').value = '';
+        document.getElementById('classTermId').value = '';
+        document.getElementById('className').value = c.name || '';
+        document.getElementById('classCapacity').value = c.capacity || 30;
+        document.getElementById('classRoom').value = c.room || '';
+    },
+    reset() {
+        this.editingId = null;
+        document.getElementById('classFormTitle').textContent = 'Add Class';
+        document.getElementById('classForm').reset();
+        document.getElementById('classCapacity').value = 30;
+        hideAlert('classFormAlert');
+    },
+    payload() {
+        return {
+            subjectId: Number(document.getElementById('classSubjectId').value),
+            teacherId: Number(document.getElementById('classTeacherId').value),
+            termId: Number(document.getElementById('classTermId').value),
+            name: document.getElementById('className').value,
+            capacity: Number(document.getElementById('classCapacity').value) || 30,
+            room: document.getElementById('classRoom').value
+        };
+    },
+    async add() {
+        hideAlert('classFormAlert');
+        try { await Api.post('/classes', this.payload()); this.reset(); loadClasses(); }
+        catch (err) { showAlert('classFormAlert', err.message); }
+    },
+    async update() {
+        hideAlert('classFormAlert');
+        if (!this.editingId) { showAlert('classFormAlert', 'Select a class from the table first.'); return; }
+        try { await Api.put(`/classes/${this.editingId}`, this.payload()); this.reset(); loadClasses(); }
+        catch (err) { showAlert('classFormAlert', err.message); }
+    },
+    async remove() {
+        hideAlert('classFormAlert');
+        if (!this.editingId) { showAlert('classFormAlert', 'Select a class from the table first.'); return; }
+        if (!confirm('Delete this class? This cannot be undone.')) return;
+        try { await Api.delete(`/classes/${this.editingId}`); this.reset(); loadClasses(); }
+        catch (err) { showAlert('classFormAlert', err.message); }
+    }
+};
+
+// ---------- Students ----------
+async function loadStudents() {
+    try {
+        const students = await Api.get('/students');
+        const el = document.getElementById('studentsTable');
+        if (!students.length) { el.innerHTML = emptyState('student', 'No students yet — add one above.'); return; }
+        el.innerHTML = `
+            <table>
+                <thead><tr><th>ID</th><th>Name</th><th>DOB</th><th>Enrolled</th><th>Guardian</th><th>Linked User</th><th></th></tr></thead>
+                <tbody>
+                    ${students.map(s => `
+                        <tr class="row-clickable" onclick='Students.select(${JSON.stringify(s)})'>
+                            <td>${s.id}</td>
+                            <td><strong>${s.fullName}</strong></td>
+                            <td>${formatDate(s.dob)}</td>
+                            <td>${formatDate(s.enrollmentDate)}</td>
+                            <td>${s.guardianName || '-'}</td>
+                            <td>${s.userId || '-'}</td>
+                            <td><span class="row-actions"><button class="btn btn-icon btn-secondary" title="Edit" onclick='event.stopPropagation(); Students.select(${JSON.stringify(s)})'>${Icons.html('edit', 14)}</button></span></td>
+                        </tr>`).join('')}
+                </tbody>
+            </table>`;
+    } catch (err) {
+        document.getElementById('studentsTable').innerHTML = `<div class="empty-state">${err.message}</div>`;
+    }
+}
+
+const Students = {
+    editingId: null,
+    select(s) {
+        this.editingId = s.id;
+        document.getElementById('studentFormTitle').textContent = 'Editing Student #' + s.id;
+        document.getElementById('studentFullName').value = s.fullName || '';
+        document.getElementById('studentDob').value = s.dob || '';
+        document.getElementById('studentGuardianId').value = s.guardianId || '';
+        document.getElementById('studentUserId').value = s.userId || '';
+    },
+    reset() {
+        this.editingId = null;
+        document.getElementById('studentFormTitle').textContent = 'Add Student';
+        document.getElementById('studentForm').reset();
+        hideAlert('studentFormAlert');
+    },
+    payload() {
+        const guardianId = document.getElementById('studentGuardianId').value;
+        const userId = document.getElementById('studentUserId').value;
+        return {
+            fullName: document.getElementById('studentFullName').value,
+            dob: document.getElementById('studentDob').value || null,
+            guardianId: guardianId ? Number(guardianId) : null,
+            userId: userId ? Number(userId) : null
+        };
+    },
+    async add() {
+        hideAlert('studentFormAlert');
+        try { await Api.post('/students', this.payload()); this.reset(); loadStudents(); }
+        catch (err) { showAlert('studentFormAlert', err.message); }
+    },
+    async update() {
+        hideAlert('studentFormAlert');
+        if (!this.editingId) { showAlert('studentFormAlert', 'Select a student from the table first.'); return; }
+        try { await Api.put(`/students/${this.editingId}`, this.payload()); this.reset(); loadStudents(); }
+        catch (err) { showAlert('studentFormAlert', err.message); }
+    },
+    async remove() {
+        hideAlert('studentFormAlert');
+        if (!this.editingId) { showAlert('studentFormAlert', 'Select a student from the table first.'); return; }
+        if (!confirm('Delete this student? This cannot be undone.')) return;
+        try { await Api.delete(`/students/${this.editingId}`); this.reset(); loadStudents(); }
+        catch (err) { showAlert('studentFormAlert', err.message); }
+    }
+};
+
+// ---------- Teachers ----------
+async function loadTeachers() {
+    try {
+        const teachers = await Api.get('/teachers');
+        const el = document.getElementById('teachersTable');
+        if (!teachers.length) { el.innerHTML = emptyState('teacher', 'No teachers yet — add one above.'); return; }
+        el.innerHTML = `
+            <table>
+                <thead><tr><th>ID</th><th>Name</th><th>Username</th><th>Specialization</th><th>Phone</th><th>Hired</th><th></th></tr></thead>
+                <tbody>
+                    ${teachers.map(t => `
+                        <tr class="row-clickable" onclick='Teachers.select(${JSON.stringify(t)})'>
+                            <td>${t.id}</td>
+                            <td><strong>${t.fullName}</strong></td>
+                            <td>${t.username}</td>
+                            <td>${t.specialization || '-'}</td>
+                            <td>${t.phone || '-'}</td>
+                            <td>${formatDate(t.hireDate)}</td>
+                            <td><span class="row-actions"><button class="btn btn-icon btn-secondary" title="Edit" onclick='event.stopPropagation(); Teachers.select(${JSON.stringify(t)})'>${Icons.html('edit', 14)}</button></span></td>
+                        </tr>`).join('')}
+                </tbody>
+            </table>`;
+    } catch (err) {
+        document.getElementById('teachersTable').innerHTML = `<div class="empty-state">${err.message}</div>`;
+    }
+}
+
+const Teachers = {
+    editingId: null,
+    select(t) {
+        this.editingId = t.id;
+        document.getElementById('teacherFormTitle').textContent = 'Editing Teacher #' + t.id;
+        document.getElementById('teacherUserId').value = '';
+        document.getElementById('teacherFullName').value = t.fullName || '';
+        document.getElementById('teacherPhone').value = t.phone || '';
+        document.getElementById('teacherSpecialization').value = t.specialization || '';
+        document.getElementById('teacherHireDate').value = t.hireDate || '';
+    },
+    reset() {
+        this.editingId = null;
+        document.getElementById('teacherFormTitle').textContent = 'Add Teacher';
+        document.getElementById('teacherForm').reset();
+        hideAlert('teacherFormAlert');
+    },
+    payload() {
+        return {
+            userId: Number(document.getElementById('teacherUserId').value),
+            fullName: document.getElementById('teacherFullName').value,
+            phone: document.getElementById('teacherPhone').value,
+            specialization: document.getElementById('teacherSpecialization').value,
+            hireDate: document.getElementById('teacherHireDate').value || null
+        };
+    },
+    async add() {
+        hideAlert('teacherFormAlert');
+        try { await Api.post('/teachers', this.payload()); this.reset(); loadTeachers(); }
+        catch (err) { showAlert('teacherFormAlert', err.message); }
+    },
+    async update() {
+        hideAlert('teacherFormAlert');
+        if (!this.editingId) { showAlert('teacherFormAlert', 'Select a teacher from the table first.'); return; }
+        try { await Api.put(`/teachers/${this.editingId}`, this.payload()); this.reset(); loadTeachers(); }
+        catch (err) { showAlert('teacherFormAlert', err.message); }
+    },
+    async remove() {
+        hideAlert('teacherFormAlert');
+        if (!this.editingId) { showAlert('teacherFormAlert', 'Select a teacher from the table first.'); return; }
+        if (!confirm('Delete this teacher? This cannot be undone.')) return;
+        try { await Api.delete(`/teachers/${this.editingId}`); this.reset(); loadTeachers(); }
+        catch (err) { showAlert('teacherFormAlert', err.message); }
+    }
+};
+
+// ---------- Guardians ----------
+async function loadGuardians() {
+    try {
+        const guardians = await Api.get('/guardians');
+        const el = document.getElementById('guardiansTable');
+        if (!guardians.length) { el.innerHTML = emptyState('guardians', 'No guardians yet — add one above.'); return; }
+        el.innerHTML = `
+            <table>
+                <thead><tr><th>ID</th><th>Name</th><th>Phone</th><th>Address</th><th>Linked User</th><th></th></tr></thead>
+                <tbody>
+                    ${guardians.map(g => `
+                        <tr class="row-clickable" onclick='Guardians.select(${JSON.stringify(g)})'>
+                            <td>${g.id}</td>
+                            <td><strong>${g.fullName}</strong></td>
+                            <td>${g.phone}</td>
+                            <td>${g.address || '-'}</td>
+                            <td>${g.userId || '-'}</td>
+                            <td><span class="row-actions"><button class="btn btn-icon btn-secondary" title="Edit" onclick='event.stopPropagation(); Guardians.select(${JSON.stringify(g)})'>${Icons.html('edit', 14)}</button></span></td>
+                        </tr>`).join('')}
+                </tbody>
+            </table>`;
+    } catch (err) {
+        document.getElementById('guardiansTable').innerHTML = `<div class="empty-state">${err.message}</div>`;
+    }
+}
+
+const Guardians = {
+    editingId: null,
+    select(g) {
+        this.editingId = g.id;
+        document.getElementById('guardianFormTitle').textContent = 'Editing Guardian #' + g.id;
+        document.getElementById('guardianFullName').value = g.fullName || '';
+        document.getElementById('guardianPhone').value = g.phone || '';
+        document.getElementById('guardianAddress').value = g.address || '';
+        document.getElementById('guardianUserId').value = g.userId || '';
+    },
+    reset() {
+        this.editingId = null;
+        document.getElementById('guardianFormTitle').textContent = 'Add Guardian';
+        document.getElementById('guardianForm').reset();
+        hideAlert('guardianFormAlert');
+    },
+    payload() {
+        const userId = document.getElementById('guardianUserId').value;
+        return {
+            fullName: document.getElementById('guardianFullName').value,
+            phone: document.getElementById('guardianPhone').value,
+            address: document.getElementById('guardianAddress').value,
+            userId: userId ? Number(userId) : null
+        };
+    },
+    async add() {
+        hideAlert('guardianFormAlert');
+        try { await Api.post('/guardians', this.payload()); this.reset(); loadGuardians(); }
+        catch (err) { showAlert('guardianFormAlert', err.message); }
+    },
+    async update() {
+        hideAlert('guardianFormAlert');
+        if (!this.editingId) { showAlert('guardianFormAlert', 'Select a guardian from the table first.'); return; }
+        try { await Api.put(`/guardians/${this.editingId}`, this.payload()); this.reset(); loadGuardians(); }
+        catch (err) { showAlert('guardianFormAlert', err.message); }
+    },
+    async remove() {
+        hideAlert('guardianFormAlert');
+        if (!this.editingId) { showAlert('guardianFormAlert', 'Select a guardian from the table first.'); return; }
+        if (!confirm('Delete this guardian? This cannot be undone.')) return;
+        try { await Api.delete(`/guardians/${this.editingId}`); this.reset(); loadGuardians(); }
+        catch (err) { showAlert('guardianFormAlert', err.message); }
+    }
+};
+
+// ---------- Invoices ----------
+document.getElementById('invoiceForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    try {
+        await Api.post('/invoices', {
+            studentId: Number(document.getElementById('invStudentId').value),
+            feeStructureId: Number(document.getElementById('invFeeStructureId').value),
+            dueDate: document.getElementById('invDueDate').value
+        });
+        alert('Invoice created successfully.');
+        e.target.reset();
+    } catch (err) {
+        alert('Failed: ' + err.message);
+    }
+});
+
+async function loadStudentInvoices() {
+    const studentId = document.getElementById('lookupStudentId').value;
+    if (!studentId) return;
+    try {
+        const invoices = await Api.get(`/invoices/student/${studentId}`);
+        const el = document.getElementById('invoicesTable');
+        if (!invoices.length) { el.innerHTML = emptyState('invoices', 'No invoices for this student.'); return; }
+        el.innerHTML = `
+            <table>
+                <thead><tr><th>Due Date</th><th>Amount Due</th><th>Paid</th><th>Balance</th><th>Status</th></tr></thead>
+                <tbody>
+                    ${invoices.map(i => `
+                        <tr>
+                            <td>${formatDate(i.dueDate)}</td>
+                            <td>${formatCurrency(i.amountDue)}</td>
+                            <td>${formatCurrency(i.amountPaid)}</td>
+                            <td>${formatCurrency(i.balance)}</td>
+                            <td><span class="status-pill status-${i.status.toLowerCase()}">${i.status}</span></td>
+                        </tr>`).join('')}
+                </tbody>
+            </table>`;
+    } catch (err) {
+        document.getElementById('invoicesTable').innerHTML = `<div class="empty-state">${err.message}</div>`;
+    }
+}
+
+// ---------- Overdue ----------
+async function loadOverdue() {
+    try {
+        const overdue = await Api.get('/invoices/overdue');
+        const el = document.getElementById('overdueTable');
+        if (!overdue.length) { el.innerHTML = emptyState('attendance', 'No overdue invoices. Nice and tidy!'); return; }
+        el.innerHTML = `
+            <table>
+                <thead><tr><th>Student</th><th>Amount Due</th><th>Balance</th><th>Due Date</th></tr></thead>
+                <tbody>
+                    ${overdue.map(i => `
+                        <tr>
+                            <td>${i.studentName}</td>
+                            <td>${formatCurrency(i.amountDue)}</td>
+                            <td>${formatCurrency(i.balance)}</td>
+                            <td>${formatDate(i.dueDate)}</td>
+                        </tr>`).join('')}
+                </tbody>
+            </table>`;
+    } catch (err) {
+        document.getElementById('overdueTable').innerHTML = `<div class="empty-state">${err.message}</div>`;
+    }
+}
+
+function emptyState(icon, message) {
+    return `<div class="empty-state">${Icons.html(icon, 40)}<div>${message}</div></div>`;
+}
+
+loadOverview();
+</script>
+</body>
+</html>

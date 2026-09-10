@@ -1,0 +1,147 @@
+2026-09-10T07:49:22.096+05:30  INFO 14328 --- [smartclass-api] [main] lk.smartclass.SmartClassApplication      : Starting SmartClassApplication using Java 25.0.4.1 with PID 14328 (C:\Users\LENOVO\Videos\New folder (2)\smartclass-spring-boot\target\classes started by LENOVO in C:\Users\LENOVO\Videos\New folder (2)\smartclass-spring-boot)
+2026-09-10T07:49:22.097+05:30 DEBUG 14328 --- [smartclass-api] [main] lk.smartclass.SmartClassApplication      : Running with Spring Boot v3.5.16, Spring v6.2.19
+2026-09-10T07:49:22.099+05:30  INFO 14328 --- [smartclass-api] [main] lk.smartclass.SmartClassApplication      : No active profile set, falling back to 1 default profile: "default"
+2026-09-10T07:49:22.757+05:30  INFO 14328 --- [smartclass-api] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-10T07:49:22.827+05:30  INFO 14328 --- [smartclass-api] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 60 ms. Found 19 JPA repository interfaces.
+2026-09-10T07:49:23.246+05:30  INFO 14328 --- [smartclass-api] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-09-10T07:49:23.262+05:30  INFO 14328 --- [smartclass-api] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-10T07:49:23.263+05:30  INFO 14328 --- [smartclass-api] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.55]
+2026-09-10T07:49:23.312+05:30  INFO 14328 --- [smartclass-api] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-09-10T07:49:23.313+05:30  INFO 14328 --- [smartclass-api] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1181 ms
+2026-09-10T07:49:23.515+05:30  INFO 14328 --- [smartclass-api] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-09-10T07:49:23.690+05:30  INFO 14328 --- [smartclass-api] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@68d6f48e
+2026-09-10T07:49:23.691+05:30  INFO 14328 --- [smartclass-api] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-09-10T07:49:23.748+05:30  INFO 14328 --- [smartclass-api] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/smartclass_db1?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&createDatabaseIfNotExist=true (MySQL 8.0)
+2026-09-10T07:49:23.833+05:30  INFO 14328 --- [smartclass-api] [main] o.f.core.internal.command.DbValidate     : Successfully validated 2 migrations (execution time 00:00.042s)
+2026-09-10T07:49:23.844+05:30  INFO 14328 --- [smartclass-api] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `smartclass_db1`: 2
+2026-09-10T07:49:23.850+05:30  INFO 14328 --- [smartclass-api] [main] o.f.core.internal.command.DbMigrate      : Schema `smartclass_db1` is up to date. No migration necessary.
+2026-09-10T07:49:23.933+05:30  INFO 14328 --- [smartclass-api] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-09-10T07:49:23.996+05:30  INFO 14328 --- [smartclass-api] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.53.Final
+2026-09-10T07:49:24.032+05:30  INFO 14328 --- [smartclass-api] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-09-10T07:49:24.307+05:30  INFO 14328 --- [smartclass-api] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-10T07:49:24.372+05:30  WARN 14328 --- [smartclass-api] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-09-10T07:49:24.382+05:30  INFO 14328 --- [smartclass-api] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.46
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-09-10T07:49:25.357+05:30  INFO 14328 --- [smartclass-api] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-09-10T07:49:25.389+05:30  INFO 14328 --- [smartclass-api] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-10T07:49:25.633+05:30 DEBUG 14328 --- [smartclass-api] [main] l.s.security.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
+2026-09-10T07:49:25.955+05:30  INFO 14328 --- [smartclass-api] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2026-09-10T07:49:25.956+05:30  WARN 14328 --- [smartclass-api] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-09-10T07:49:26.099+05:30  WARN 14328 --- [smartclass-api] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-09-10T07:49:26.122+05:30  INFO 14328 --- [smartclass-api] [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2026-09-10T07:49:26.651+05:30  INFO 14328 --- [smartclass-api] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-09-10T07:49:26.657+05:30  INFO 14328 --- [smartclass-api] [main] lk.smartclass.SmartClassApplication      : Started SmartClassApplication in 4.978 seconds (process running for 5.493)
+2026-09-10T07:50:03.234+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-10T07:50:03.234+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-09-10T07:50:03.241+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 7 ms
+2026-09-10T07:50:03.484+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-3] l.smartclass.controller.AuthController   : Login attempt for username: admin
+2026-09-10T07:50:04.158+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-3] lk.smartclass.service.AuthService        : User 'admin' logged in successfully
+2026-09-10T07:50:04.963+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-9] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T07:50:04.963+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-7] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T07:50:04.963+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-6] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T07:50:05.046+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-8] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T07:50:17.571+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-3] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T07:50:21.671+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-4] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T07:50:26.973+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-7] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T07:50:30.058+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-6] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T07:50:30.638+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-8] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T07:50:32.425+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-3] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T07:50:38.847+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-4] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T07:50:43.154+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-7] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T07:50:44.611+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-6] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T07:50:45.938+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-8] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T07:50:47.153+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-3] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T07:50:48.208+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-2] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T07:50:48.208+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-4] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T07:50:48.208+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-10] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T07:50:48.241+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-9] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T08:37:43.500+05:30  WARN 14328 --- [smartclass-api] [HikariPool-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=36m49s672ms390µs).
+2026-09-10T08:38:01.551+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-3] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T08:38:19.961+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-4] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T08:38:45.319+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-7] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T08:38:46.777+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-6] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T08:38:48.340+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-8] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T08:38:49.418+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-5] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T08:38:50.548+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-3] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T08:38:51.459+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-2] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T08:38:54.422+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-4] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T08:38:55.011+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-7] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T08:38:55.971+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-6] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T08:38:56.715+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-5] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T08:38:57.450+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-1] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T08:38:58.569+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-3] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T08:38:59.250+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-2] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T08:39:01.831+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-6] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T08:39:01.831+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-8] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T08:39:01.831+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-9] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T08:39:01.852+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-1] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T08:39:10.275+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-2] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T09:06:30.592+05:30 ERROR 14328 --- [smartclass-api] [http-nio-8080-exec-9] l.s.security.JwtAuthenticationFilter     : JWT authentication failed: JWT expired 986590 milliseconds ago at 2026-09-10T03:20:04.000Z. Current time: 2026-09-10T03:36:30.590Z. Allowed clock skew: 0 milliseconds.
+2026-09-10T09:06:41.648+05:30 ERROR 14328 --- [smartclass-api] [http-nio-8080-exec-5] l.s.security.JwtAuthenticationFilter     : JWT authentication failed: JWT expired 997648 milliseconds ago at 2026-09-10T03:20:04.000Z. Current time: 2026-09-10T03:36:41.648Z. Allowed clock skew: 0 milliseconds.
+2026-09-10T09:06:43.306+05:30 ERROR 14328 --- [smartclass-api] [http-nio-8080-exec-1] l.s.security.JwtAuthenticationFilter     : JWT authentication failed: JWT expired 999306 milliseconds ago at 2026-09-10T03:20:04.000Z. Current time: 2026-09-10T03:36:43.306Z. Allowed clock skew: 0 milliseconds.
+2026-09-10T09:06:44.486+05:30 ERROR 14328 --- [smartclass-api] [http-nio-8080-exec-3] l.s.security.JwtAuthenticationFilter     : JWT authentication failed: JWT expired 1000485 milliseconds ago at 2026-09-10T03:20:04.000Z. Current time: 2026-09-10T03:36:44.485Z. Allowed clock skew: 0 milliseconds.
+2026-09-10T09:06:44.681+05:30 ERROR 14328 --- [smartclass-api] [http-nio-8080-exec-2] l.s.security.JwtAuthenticationFilter     : JWT authentication failed: JWT expired 1000681 milliseconds ago at 2026-09-10T03:20:04.000Z. Current time: 2026-09-10T03:36:44.681Z. Allowed clock skew: 0 milliseconds.
+2026-09-10T09:06:45.328+05:30 ERROR 14328 --- [smartclass-api] [http-nio-8080-exec-4] l.s.security.JwtAuthenticationFilter     : JWT authentication failed: JWT expired 1001328 milliseconds ago at 2026-09-10T03:20:04.000Z. Current time: 2026-09-10T03:36:45.328Z. Allowed clock skew: 0 milliseconds.
+2026-09-10T09:06:45.870+05:30 ERROR 14328 --- [smartclass-api] [http-nio-8080-exec-8] l.s.security.JwtAuthenticationFilter     : JWT authentication failed: JWT expired 1001870 milliseconds ago at 2026-09-10T03:20:04.000Z. Current time: 2026-09-10T03:36:45.870Z. Allowed clock skew: 0 milliseconds.
+2026-09-10T09:06:46.369+05:30 ERROR 14328 --- [smartclass-api] [http-nio-8080-exec-6] l.s.security.JwtAuthenticationFilter     : JWT authentication failed: JWT expired 1002369 milliseconds ago at 2026-09-10T03:20:04.000Z. Current time: 2026-09-10T03:36:46.369Z. Allowed clock skew: 0 milliseconds.
+2026-09-10T09:06:46.798+05:30 ERROR 14328 --- [smartclass-api] [http-nio-8080-exec-5] l.s.security.JwtAuthenticationFilter     : JWT authentication failed: JWT expired 1002798 milliseconds ago at 2026-09-10T03:20:04.000Z. Current time: 2026-09-10T03:36:46.798Z. Allowed clock skew: 0 milliseconds.
+2026-09-10T09:06:46.798+05:30 ERROR 14328 --- [smartclass-api] [http-nio-8080-exec-1] l.s.security.JwtAuthenticationFilter     : JWT authentication failed: JWT expired 1002798 milliseconds ago at 2026-09-10T03:20:04.000Z. Current time: 2026-09-10T03:36:46.798Z. Allowed clock skew: 0 milliseconds.
+2026-09-10T09:06:46.799+05:30 ERROR 14328 --- [smartclass-api] [http-nio-8080-exec-3] l.s.security.JwtAuthenticationFilter     : JWT authentication failed: JWT expired 1002799 milliseconds ago at 2026-09-10T03:20:04.000Z. Current time: 2026-09-10T03:36:46.799Z. Allowed clock skew: 0 milliseconds.
+2026-09-10T09:06:51.930+05:30 ERROR 14328 --- [smartclass-api] [http-nio-8080-exec-10] l.s.security.JwtAuthenticationFilter     : JWT authentication failed: JWT expired 1007930 milliseconds ago at 2026-09-10T03:20:04.000Z. Current time: 2026-09-10T03:36:51.930Z. Allowed clock skew: 0 milliseconds.
+2026-09-10T09:06:52.673+05:30 ERROR 14328 --- [smartclass-api] [http-nio-8080-exec-7] l.s.security.JwtAuthenticationFilter     : JWT authentication failed: JWT expired 1008672 milliseconds ago at 2026-09-10T03:20:04.000Z. Current time: 2026-09-10T03:36:52.672Z. Allowed clock skew: 0 milliseconds.
+2026-09-10T09:06:53.791+05:30 ERROR 14328 --- [smartclass-api] [http-nio-8080-exec-9] l.s.security.JwtAuthenticationFilter     : JWT authentication failed: JWT expired 1009791 milliseconds ago at 2026-09-10T03:20:04.000Z. Current time: 2026-09-10T03:36:53.791Z. Allowed clock skew: 0 milliseconds.
+2026-09-10T09:06:54.694+05:30 ERROR 14328 --- [smartclass-api] [http-nio-8080-exec-6] l.s.security.JwtAuthenticationFilter     : JWT authentication failed: JWT expired 1010694 milliseconds ago at 2026-09-10T03:20:04.000Z. Current time: 2026-09-10T03:36:54.694Z. Allowed clock skew: 0 milliseconds.
+2026-09-10T09:06:55.410+05:30 ERROR 14328 --- [smartclass-api] [http-nio-8080-exec-1] l.s.security.JwtAuthenticationFilter     : JWT authentication failed: JWT expired 1011410 milliseconds ago at 2026-09-10T03:20:04.000Z. Current time: 2026-09-10T03:36:55.410Z. Allowed clock skew: 0 milliseconds.
+2026-09-10T09:07:20.926+05:30 ERROR 14328 --- [smartclass-api] [http-nio-8080-exec-6] l.s.security.JwtAuthenticationFilter     : JWT authentication failed: JWT expired 1036926 milliseconds ago at 2026-09-10T03:20:04.000Z. Current time: 2026-09-10T03:37:20.926Z. Allowed clock skew: 0 milliseconds.
+2026-09-10T09:07:20.926+05:30 ERROR 14328 --- [smartclass-api] [http-nio-8080-exec-9] l.s.security.JwtAuthenticationFilter     : JWT authentication failed: JWT expired 1036926 milliseconds ago at 2026-09-10T03:20:04.000Z. Current time: 2026-09-10T03:37:20.926Z. Allowed clock skew: 0 milliseconds.
+2026-09-10T09:07:20.926+05:30 ERROR 14328 --- [smartclass-api] [http-nio-8080-exec-8] l.s.security.JwtAuthenticationFilter     : JWT authentication failed: JWT expired 1036926 milliseconds ago at 2026-09-10T03:20:04.000Z. Current time: 2026-09-10T03:37:20.926Z. Allowed clock skew: 0 milliseconds.
+2026-09-10T09:08:58.245+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-7] l.smartclass.controller.AuthController   : Registration attempt for username: lahiru
+2026-09-10T09:08:58.562+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-7] lk.smartclass.service.AuthService        : New user registered: 'lahiru' with role 'TEACHER'
+2026-09-10T09:09:47.588+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-4] l.smartclass.controller.AuthController   : Login attempt for username: lahiru
+2026-09-10T09:09:47.750+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-4] lk.smartclass.service.AuthService        : User 'lahiru' logged in successfully
+2026-09-10T09:11:55.900+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-8] l.smartclass.controller.AuthController   : Registration attempt for username: udara
+2026-09-10T09:11:56.063+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-8] lk.smartclass.service.AuthService        : New user registered: 'udara' with role 'STUDENT'
+2026-09-10T09:12:13.795+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-2] l.s.security.JwtAuthenticationFilter     : Authenticated user 'udara' via JWT
+2026-09-10T09:12:23.097+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-5] l.s.security.JwtAuthenticationFilter     : Authenticated user 'udara' via JWT
+2026-09-10T09:12:24.459+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-10] l.s.security.JwtAuthenticationFilter     : Authenticated user 'udara' via JWT
+2026-09-10T09:12:59.566+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-6] l.smartclass.controller.AuthController   : Login attempt for username: admin
+2026-09-10T09:12:59.735+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-6] lk.smartclass.service.AuthService        : User 'admin' logged in successfully
+2026-09-10T09:12:59.827+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-3] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T09:12:59.827+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-2] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T09:12:59.827+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-5] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T09:12:59.871+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-10] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T09:13:02.061+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-4] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T09:14:49.790+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-3] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T09:14:54.187+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-5] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T09:14:56.317+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-10] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T09:14:57.199+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-6] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T09:14:58.018+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-9] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T09:14:58.720+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-8] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T09:15:07.239+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-3] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T09:15:29.512+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-4] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T09:15:29.512+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-10] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T09:15:29.512+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-6] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T09:15:29.539+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-8] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T09:15:39.873+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-3] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T09:15:39.885+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-3] l.s.controller.AiChatController          : AI chat message from 'admin': How many students do we have?
+2026-09-10T09:15:44.983+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-5] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T09:15:44.983+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-5] l.s.controller.AiChatController          : AI chat message from 'admin': Any overdue invoices?
+2026-09-10T09:15:49.205+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-7] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T09:15:49.205+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-7] l.s.controller.AiChatController          : AI chat message from 'admin': How do I add a new class?
+2026-09-10T09:15:53.134+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-4] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T09:15:53.134+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-4] l.s.controller.AiChatController          : AI chat message from 'admin': What can you help with?
+2026-09-10T09:16:05.787+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-9] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T09:16:07.702+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-1] l.s.security.JwtAuthenticationFilter     : Authenticated user 'admin' via JWT
+2026-09-10T09:16:31.699+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-7] l.smartclass.controller.AuthController   : Login attempt for username: lahiru
+2026-09-10T09:16:31.872+05:30  INFO 14328 --- [smartclass-api] [http-nio-8080-exec-7] lk.smartclass.service.AuthService        : User 'lahiru' logged in successfully
+2026-09-10T09:22:24.223+05:30  INFO 14328 --- [smartclass-api] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-09-10T09:22:24.228+05:30  INFO 14328 --- [smartclass-api] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-09-10T09:22:24.233+05:30  INFO 14328 --- [smartclass-api] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-10T09:22:24.235+05:30  INFO 14328 --- [smartclass-api] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-09-10T09:22:24.236+05:30  INFO 14328 --- [smartclass-api] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

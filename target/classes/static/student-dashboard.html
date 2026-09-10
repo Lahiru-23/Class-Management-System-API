@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartClass - Student Dashboard</title>
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div class="app-shell">
+    <nav class="sidebar">
+        <div class="sidebar-logo"><span class="nav-icon" data-icon="graduation"></span> SmartClass</div>
+        <div class="sidebar-nav">
+            <div class="nav-item active" data-tab="grades"><span class="nav-icon" data-icon="grading"></span><span class="nav-label">My Grades</span></div>
+            <div class="nav-item" data-tab="fees"><span class="nav-icon" data-icon="fees"></span><span class="nav-label">My Fees</span></div>
+            <div class="nav-item" data-tab="notifications"><span class="nav-icon" data-icon="notifications"></span><span class="nav-label">Notifications</span></div>
+            <div class="nav-item" data-tab="announcements"><span class="nav-icon" data-icon="announcements"></span><span class="nav-label">Announcements</span></div>
+        </div>
+        <div class="sidebar-footer">
+            <div class="nav-item logout-item" id="logoutBtn"><span class="nav-icon" data-icon="logout"></span><span class="nav-label">Logout</span></div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="topbar">
+            <h2 id="pageTitle">My Grades</h2>
+            <div class="user-chip">
+                <span class="avatar-circle" id="avatarCircle"></span>
+                <span id="userLabel"></span>
+                <span class="badge badge-student">STUDENT</span>
+            </div>
+        </div>
+
+        <div class="panel" id="studentIdPanel" style="background:var(--primary-light); border:1px solid var(--primary); display:none;">
+            <p style="font-size:13px; color:var(--text);">
+                Your account isn't linked to a Student profile yet (or you're viewing as ADMIN) — enter a
+                Student ID below to look up records.
+                <input type="number" id="myStudentId" placeholder="Student ID" style="margin-left:8px; padding:6px 10px; border:1px solid var(--border); border-radius:6px; width:140px;">
+                <button class="btn btn-primary btn-sm" onclick="saveStudentId()">Save</button>
+            </p>
+        </div>
+
+        <!-- Grades tab -->
+        <section id="tab-grades">
+            <div class="chart-panel" style="margin-bottom:18px;">
+                <h3><span class="nav-icon" data-icon="analytics"></span> Marks Overview</h3>
+                <div class="chart-sub">Marks obtained per graded assignment</div>
+                <div class="chart-canvas-wrap"><canvas id="gradesChart"></canvas></div>
+            </div>
+            <div class="panel">
+                <div class="panel-header"><h3><span class="nav-icon" data-icon="grading"></span> My Submissions & Grades</h3></div>
+                <div id="gradesTable"></div>
+            </div>
+        </section>
+
+        <!-- Fees tab -->
+        <section id="tab-fees" style="display:none;">
+            <div class="panel">
+                <div class="panel-header"><h3><span class="nav-icon" data-icon="fees"></span> My Invoices</h3></div>
+                <div id="feesTable"></div>
+            </div>
+        </section>
+
+        <!-- Notifications tab -->
+        <section id="tab-notifications" style="display:none;">
+            <div class="panel">
+                <div class="panel-header"><h3><span class="nav-icon" data-icon="notifications"></span> Notifications</h3></div>
+                <div id="notificationsTable"></div>
+            </div>
+        </section>
+
+        <!-- Announcements tab -->
+        <section id="tab-announcements" style="display:none;">
+            <div class="panel">
+                <div class="panel-header"><h3><span class="nav-icon" data-icon="announcements"></span> Institute-wide Announcements</h3></div>
+                <div id="announcementsTable"></div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script src="icons.js"></script>
+<script src="api.js"></script>
+<script src="ai-chat.js"></script>
+<script>
+Auth.requireRole(['STUDENT', 'ADMIN']);
+const currentUser = Auth.getUser();
+document.getElementById('userLabel').textContent = currentUser.username;
+document.getElementById('avatarCircle').textContent = currentUser.username.charAt(0).toUpperCase();
+document.getElementById('logoutBtn').addEventListener('click', () => Auth.logout());
+document.querySelectorAll('.nav-icon[data-icon]').forEach(el => { el.innerHTML = Icons.html(el.dataset.icon, 19); });
+document.querySelectorAll('.sidebar-logo .nav-icon').forEach(el => el.innerHTML = Icons.html('graduation', 24));
+AiChat.init();
+
+// The account's own Student ID now comes straight from login (AuthResponse.studentId).
+// The manual-entry box is only shown as a fallback (e.g. an ADMIN previewing this page,
+// or an account that hasn't been linked to a Student profile yet by an admin/teacher).
+function getStudentId() {
+    const own = Auth.getUser() && Auth.getUser().studentId;
+    return own || localStorage.getItem('smartclass_student_id');
+}
+function saveStudentId() {
+    const id = document.getElementById('myStudentId').value;
+    if (id) {
+        localStorage.setItem('smartclass_student_id', id);
+        loadTabData(currentTab());
+    }
+}
+if (!(Auth.getUser() && Auth.getUser().studentId)) {
+    document.getElementById('studentIdPanel').style.display = 'block';
+    document.getElementById('myStudentId').value = localStorage.getItem('smartclass_student_id') || '';
+}
+
+function currentTab() {
+    return document.querySelector('.nav-item.active').dataset.tab;
+}
+
+document.querySelectorAll('.nav-item[data-tab]').forEach(item => {
+    item.addEventListener('click', () => {
+        document.querySelectorAll('.nav-item[data-tab]').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        document.querySelectorAll('main section').forEach(s => s.style.display = 'none');
+        document.getElementById('tab-' + item.dataset.tab).style.display = 'block';
+        document.getElementById('pageTitle').textContent = item.querySelector('.nav-label').textContent.trim();
+        loadTabData(item.dataset.tab);
+    });
+});
+
+function loadTabData(tab) {
+    if (tab === 'grades') loadGrades();
+    if (tab === 'fees') loadFees();
+    if (tab === 'notifications') loadNotifications();
+    if (tab === 'announcements') loadAnnouncements();
+}
+
+async function loadGrades() {
+    const studentId = getStudentId();
+    const el = document.getElementById('gradesTable');
+    if (!studentId) { el.innerHTML = '<div class="empty-state">Enter your Student ID above first.</div>'; return; }
+    try {
+        const submissions = await Api.get(`/submissions/student/${studentId}`);
+        if (!submissions.length) { el.innerHTML = `<div class="empty-state">${Icons.html('grading', 40)}<div>No submissions yet.</div></div>`; return; }
+        el.innerHTML = `
+            <table>
+                <thead><tr><th>Assignment</th><th>Submitted</th><th>Marks</th><th>Feedback</th></tr></thead>
+                <tbody>
+                    ${submissions.map(s => `
+                        <tr>
+                            <td><strong>${s.assignmentTitle}</strong></td>
+                            <td>${new Date(s.submittedAt).toLocaleDateString()}</td>
+                            <td>${s.marksObtained !== null ? s.marksObtained + ' / ' + s.maxMarks : 'Pending'}</td>
+                            <td>${s.feedback || '-'}</td>
+                        </tr>`).join('')}
+                </tbody>
+            </table>`;
+        renderGradesChart(submissions);
+    } catch (err) {
+        el.innerHTML = `<div class="empty-state">${err.message}</div>`;
+    }
+}
+
+let gradesChartInstance = null;
+function renderGradesChart(submissions) {
+    const graded = submissions.filter(s => s.marksObtained !== null && s.marksObtained !== undefined);
+    if (!graded.length) return;
+    if (gradesChartInstance) gradesChartInstance.destroy();
+    gradesChartInstance = new Chart(document.getElementById('gradesChart'), {
+        type: 'bar',
+        data: {
+            labels: graded.map(s => s.assignmentTitle),
+            datasets: [
+                { label: 'Marks obtained', data: graded.map(s => s.marksObtained), backgroundColor: '#6366f1', borderRadius: 6 },
+                { label: 'Max marks', data: graded.map(s => s.maxMarks), backgroundColor: '#e0e7ff', borderRadius: 6 }
+            ]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, grid: { color: '#eef0fb' } } } }
+    });
+}
+
+async function loadFees() {
+    const studentId = getStudentId();
+    const el = document.getElementById('feesTable');
+    if (!studentId) { el.innerHTML = '<div class="empty-state">Enter your Student ID above first.</div>'; return; }
+    try {
+        const invoices = await Api.get(`/invoices/student/${studentId}`);
+        if (!invoices.length) { el.innerHTML = '<div class="empty-state">No invoices yet.</div>'; return; }
+        el.innerHTML = `
+            <table>
+                <thead><tr><th>Due Date</th><th>Amount Due</th><th>Paid</th><th>Balance</th><th>Status</th></tr></thead>
+                <tbody>
+                    ${invoices.map(i => `
+                        <tr>
+                            <td>${formatDate(i.dueDate)}</td>
+                            <td>${formatCurrency(i.amountDue)}</td>
+                            <td>${formatCurrency(i.amountPaid)}</td>
+                            <td>${formatCurrency(i.balance)}</td>
+                            <td><span class="status-pill status-${i.status.toLowerCase()}">${i.status}</span></td>
+                        </tr>`).join('')}
+                </tbody>
+            </table>`;
+    } catch (err) {
+        el.innerHTML = `<div class="empty-state">${err.message}</div>`;
+    }
+}
+
+async function loadNotifications() {
+    const userId = Auth.getUser() && Auth.getUser().userId;
+    const el = document.getElementById('notificationsTable');
+    if (!userId) { el.innerHTML = '<div class="empty-state">Could not determine your account ID. Please log in again.</div>'; return; }
+    try {
+        const notifications = await Api.get(`/notifications/user/${userId}`);
+        if (!notifications.length) { el.innerHTML = '<div class="empty-state">No notifications yet.</div>'; return; }
+        el.innerHTML = `
+            <table>
+                <thead><tr><th>Message</th><th>Type</th><th>Date</th><th></th></tr></thead>
+                <tbody>
+                    ${notifications.map(n => `
+                        <tr style="${n.isRead ? '' : 'font-weight:600;'}">
+                            <td>${n.message}</td>
+                            <td>${n.type}</td>
+                            <td>${new Date(n.createdAt).toLocaleString()}</td>
+                            <td>${n.isRead ? '' : `<button class="btn btn-secondary btn-sm" onclick="markNotificationRead(${n.id})">Mark read</button>`}</td>
+                        </tr>`).join('')}
+                </tbody>
+            </table>`;
+    } catch (err) {
+        el.innerHTML = `<div class="empty-state">${err.message}</div>`;
+    }
+}
+
+async function markNotificationRead(id) {
+    try {
+        await Api.patch(`/notifications/${id}/read`);
+        loadNotifications();
+    } catch (err) {
+        alert(err.message);
+    }
+}
+
+async function loadAnnouncements() {
+    const el = document.getElementById('announcementsTable');
+    try {
+        const announcements = await Api.get('/announcements/institute-wide');
+        if (!announcements.length) { el.innerHTML = '<div class="empty-state">No announcements yet.</div>'; return; }
+        el.innerHTML = announcements.map(a => `
+            <div class="panel" style="margin-bottom:10px; padding:16px;">
+                <div style="display:flex; justify-content:space-between;">
+                    <strong>${a.title}</strong>
+                    <span style="font-size:12px; color:var(--text-muted);">${new Date(a.postedAt).toLocaleDateString()}</span>
+                </div>
+                <p style="font-size:14px; margin-top:6px; color:var(--text-muted);">${a.body}</p>
+            </div>`).join('');
+    } catch (err) {
+        el.innerHTML = `<div class="empty-state">${err.message}</div>`;
+    }
+}
+
+loadGrades();
+</script>
+</body>
+</html>

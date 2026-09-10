@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartClass - Register</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="auth-logo">
+            <div class="icon-badge" id="logoBadge"></div>
+            <h1>Create Account</h1>
+            <p>Join SmartClass</p>
+        </div>
+
+        <div id="registerAlert" class="alert alert-error"></div>
+
+        <form id="registerForm" novalidate>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" required minlength="4" maxlength="50">
+                <div class="form-error" id="usernameError">Username must be 4-50 characters</div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" required>
+                <div class="form-error" id="emailError">Enter a valid email address</div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required minlength="8">
+                <div class="form-error" id="passwordError">Password must be at least 8 characters</div>
+            </div>
+
+            <div class="form-group">
+                <label for="role">I am a</label>
+                <select id="role" required>
+                    <option value="">Select role</option>
+                    <option value="TEACHER">Teacher</option>
+                    <option value="STUDENT">Student / Guardian</option>
+                </select>
+                <div class="form-error" id="roleError">Please select a role</div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" id="registerBtn">
+                Create Account
+            </button>
+        </form>
+
+        <div class="auth-switch">
+            Already have an account? <a href="login.html">Sign in</a>
+        </div>
+    </div>
+</div>
+
+<script src="icons.js"></script>
+<script src="api.js"></script>
+<script>
+    document.getElementById('logoBadge').innerHTML = Icons.html('graduation', 36);
+
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideAlert('registerAlert');
+
+        const username = document.getElementById('username').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const role = document.getElementById('role').value;
+
+        const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+        let valid = true;
+        valid = toggleFieldError('username', username.length < 4) && valid;
+        valid = toggleFieldError('email', !emailValid) && valid;
+        valid = toggleFieldError('password', password.length < 8) && valid;
+        valid = toggleFieldError('role', role.length === 0) && valid;
+        if (!valid) return;
+
+        const btn = document.getElementById('registerBtn');
+        btn.disabled = true;
+        btn.textContent = 'Creating account...';
+
+        try {
+            const response = await Api.post('/auth/register', { username, email, password, role });
+            Auth.setSession(response);
+            const primaryRole = Auth.primaryRole();
+            if (primaryRole === 'TEACHER') window.location.href = 'teacher-dashboard.html';
+            else window.location.href = 'student-dashboard.html';
+        } catch (err) {
+            let message = err.message || 'Registration failed.';
+            if (err.details && err.details.length) message += ' ' + err.details.join(', ');
+            showAlert('registerAlert', message);
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Create Account';
+        }
+    });
+
+    function toggleFieldError(fieldId, hasError) {
+        document.getElementById(fieldId + 'Error').classList.toggle('show', hasError);
+        return !hasError;
+    }
+</script>
+</body>
+</html>
